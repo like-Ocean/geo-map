@@ -11,9 +11,6 @@ export interface GetLocationsParams {
 
 export interface GetLocationData {
     geometry: Geometry;
-    centroid: {
-        coordinates: [number, number];
-    };
 }
 
 export const getLocationsPath = '/details.php';

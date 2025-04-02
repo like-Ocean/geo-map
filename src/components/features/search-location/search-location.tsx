@@ -45,15 +45,21 @@ export const SearchLocation = () => {
         setLocation(location);
     };
 
+    const onClearHandler = () => {
+        setLocation(null);
+    };
+
     return (
         <Select
-            placeholder="Поиск"
+            allowClear
+            placeholder="Поиск мест"
             variant="filled"
             value={value}
             showSearch
             searchValue={search}
             onSelect={(_, option) => onSelectHandler(option.location)}
             onSearch={onSearchHandler}
+            onClear={onClearHandler}
             options={options}
             filterOption={false}
             loading={isPending}
