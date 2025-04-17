@@ -1,31 +1,74 @@
-import { Modal, InputNumber, Flex, Typography } from 'antd';
-import { useLocationStore } from '@/store/location';
+import { Modal, InputNumber, Flex, Typography, Button } from 'antd';
+import { useHexagonStore } from '@/store/hexagon';
+import { useEffect, useState } from 'react';
 
 export const HexagonInputModal = () => {
-    const selectedHexagonId = useLocationStore.use.selectedHexagonId();
-    const hexagonValues = useLocationStore.use.hexagonValues();
-    const setHexagonValue = useLocationStore.use.setHexagonValue();
-    const selectHexagon = useLocationStore.use.selectHexagon();
+    const selectedHexagonId = useHexagonStore.use.selectedHexagonId();
+    const hexagonValues = useHexagonStore.use.hexagonValues();
+    const setHexagonValue = useHexagonStore.use.setHexagonValue();
+    const selectHexagon = useHexagonStore.use.selectHexagon();
 
-    const value = selectedHexagonId ? hexagonValues[selectedHexagonId] || 0 : 0;
+    const [localValue, setLocalValue] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (selectedHexagonId) {
+            setLocalValue(hexagonValues[selectedHexagonId] || 0);
+        }
+    }, [selectedHexagonId, hexagonValues]);
+
+    const handleOk = async () => {
+        setIsLoading(true);
+        try {
+            if (selectedHexagonId) {
+                setHexagonValue(selectedHexagonId, localValue);
+            }
+            selectHexagon(null);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCancel = () => {
+        selectHexagon(null);
+    };
+
+    const handleChange = (value: number | null) => {
+        if (value !== null) {
+            const validatedValue = Math.max(value, 10);
+            setLocalValue(validatedValue);
+        }
+    };
 
     return (
         <Modal
-            title="Введите значение для ячейки"
+            title="Введите значение для ячейки (в тысячах)"
             open={!!selectedHexagonId}
-            onCancel={() => selectHexagon(null)}
-            onOk={() => selectHexagon(null)}
+            onCancel={handleCancel}
+            onOk={handleOk}
+            destroyOnClose
+            footer={[
+                <Button key="back" onClick={handleCancel}>
+                    Отмена
+                </Button>,
+                <Button key="submit" type="primary" loading={isLoading} onClick={handleOk}>
+                    Сохранить
+                </Button>,
+            ]}
         >
             <Flex vertical gap={16}>
-                <Typography.Text>Выбранная ячейка: {selectedHexagonId}</Typography.Text>
-                {/* мб фиксануть инпут, убрать max */}
+                <Typography.Text strong>Выбранная ячейка: {selectedHexagonId}</Typography.Text>
+
                 <InputNumber
-                    value={value}
-                    onChange={(val) => selectedHexagonId && setHexagonValue(selectedHexagonId, Number(val))}
-                    min={0}
-                    max={1000000}
+                    value={localValue}
+                    onChange={handleChange}
+                    min={10}
                     step={100}
+                    addonAfter="тыс."
+                    style={{ width: '100%' }}
                 />
+
+                <Typography.Text type="secondary">Пример: 60 → 60.000 человек</Typography.Text>
             </Flex>
         </Modal>
     );
