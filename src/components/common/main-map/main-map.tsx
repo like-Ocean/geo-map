@@ -13,6 +13,7 @@ import { Feature, Polygon } from 'geojson';
 import { HexagonInputModal } from '@/components/features/hexagon-input-modal';
 import { HexagonFeature } from '@/types/hexagon';
 
+// TODO: придумать функцию для расчёта соседней ячекий с учётом прикола генерации гексагонов
 export const MainMap = () => {
     const { main: map } = useMap();
 
@@ -22,6 +23,7 @@ export const MainMap = () => {
     const hexagonValues = useHexagonStore.use.hexagonValues();
     const selectHexagon = useHexagonStore.use.selectHexagon();
 
+    const setGrid = useHexagonStore.use.setGrid();
     const { data } = useGetLocationQuery(
         location && {
             osm_type: location.osm_type,
@@ -60,8 +62,13 @@ export const MainMap = () => {
             properties: {
                 ...feature.properties,
                 value: hexagonValues[`hex-${index}`] || 0,
+                gridPosition: [index % 10, Math.floor(index / 10)],
+                cellSize: cellSize,
+                isUserValue: false
             },
         }));
+
+        setGrid(grid.features as HexagonFeature[]);
 
         const textLayer = new TextLayer<HexagonFeature>({
             id: 'hexagon-values-text',
