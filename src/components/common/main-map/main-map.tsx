@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { bbox, hexGrid } from '@turf/turf';
 import centerOfMass from '@turf/center-of-mass';
 import { useGetLocationQuery } from '@/api/nominatim/location/get-location';
@@ -24,6 +24,9 @@ export const MainMap = () => {
     const selectHexagon = useHexagonStore.use.selectHexagon();
 
     const setGrid = useHexagonStore.use.setGrid();
+
+    const [layers, setLayers] = useState<LayersList>([]);
+
     const { data } = useGetLocationQuery(
         location && {
             osm_type: location.osm_type,
@@ -44,9 +47,9 @@ export const MainMap = () => {
         map.fitBounds(bounds, { padding: 20, duration: 1000 });
     }, [map, data]);
 
-    const layers: LayersList = [];
+    useEffect(() => {
+        if (!data) return;
 
-    if (data) {
         const grid = hexGrid(bbox(data.geometry), cellSize, {
             units: 'kilometers',
             mask: {
@@ -64,32 +67,13 @@ export const MainMap = () => {
                 value: hexagonValues[`hex-${index}`] || 0,
                 gridPosition: [index % 10, Math.floor(index / 10)],
                 cellSize: cellSize,
-                isUserValue: false
+                isUserValue: false,
             },
         }));
 
         setGrid(grid.features as HexagonFeature[]);
 
-        const textLayer = new TextLayer<HexagonFeature>({
-            id: 'hexagon-values-text',
-            data: grid.features as HexagonFeature[],
-            pickable: false,
-            getPosition: (d) => {
-                const centroid = centerOfMass(d);
-                return centroid.geometry.coordinates as [number, number];
-            },
-            getText: (d) => {
-                const value = d.properties.value;
-                return value > 0 ? value.toString() : '';
-            },
-            getSize: 16,
-            getAngle: 0,
-            getTextAnchor: 'middle',
-            getAlignmentBaseline: 'center',
-            getColor: [0, 0, 0, 200],
-        });
-
-        layers.push(
+        setLayers([
             new GeoJsonLayer({
                 id: 'selected-location-area',
                 data: [
@@ -123,9 +107,32 @@ export const MainMap = () => {
                     if (hexId) selectHexagon(hexId);
                 },
             }),
-            textLayer,
-        );
-    }
+
+            new TextLayer<HexagonFeature>({
+                id: 'hexagon-values-text',
+                data: grid.features as HexagonFeature[],
+                pickable: false,
+                getPosition: (d) => {
+                    const centroid = centerOfMass(d);
+                    return centroid.geometry.coordinates as [number, number];
+                },
+                getText: (d) => {
+                    const value = d.properties.value;
+                    
+                    const formattedValue = Number.isInteger(value)
+                        ? value.toString()
+                        : value.toFixed(3);
+
+                    return value > 0 ? formattedValue : '';
+                },
+                getSize: 16,
+                getAngle: 0,
+                getTextAnchor: 'middle',
+                getAlignmentBaseline: 'center',
+                getColor: [0, 0, 0, 200],
+            }),
+        ]);
+    }, [cellSize, data, hexagonValues, selectHexagon, setGrid]);
 
     return (
         <div className={styles['main-map']}>
