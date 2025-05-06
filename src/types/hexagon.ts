@@ -6,6 +6,6 @@ export interface HexagonFeature extends Feature<Polygon> {
         value: number;
         gridPosition: [number, number];
         isUserValue?: boolean;
+        cellSize: number;
     };
 }
-

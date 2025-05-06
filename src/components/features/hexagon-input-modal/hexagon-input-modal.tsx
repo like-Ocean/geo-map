@@ -10,6 +10,7 @@ export const HexagonInputModal = () => {
 
     const addSource = useHexagonStore.use.addSource();
     const removeSource = useHexagonStore.use.removeSource();
+    const setUserValue = useHexagonStore.use.setUserValue();
 
     const [localValue, setLocalValue] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +27,7 @@ export const HexagonInputModal = () => {
             if (selectedHexagonId && localValue > 0) {
                 setHexagonValue(selectedHexagonId, localValue);
                 addSource(selectedHexagonId, localValue);
+                setUserValue(selectedHexagonId, true); 
             } else if (selectedHexagonId) {
                 removeSource(selectedHexagonId);
             }
