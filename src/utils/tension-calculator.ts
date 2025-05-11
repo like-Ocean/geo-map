@@ -15,8 +15,7 @@ export const calculateTension = (
             
             const distKm = getHexDistance(hex, sourceHex);
             const cellSize = hex.properties.cellSize;
-            const n = Math.ceil(distKm / cellSize);
-            
+            const n = Math.trunc((distKm / cellSize));
             if (n === 0) continue;
             total += value / Math.pow(n, 2);
         }
