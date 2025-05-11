@@ -13,7 +13,6 @@ import { Feature, Polygon } from 'geojson';
 import { HexagonInputModal } from '@/components/features/hexagon-input-modal';
 import { HexagonFeature } from '@/types/hexagon';
 
-// TODO: придумать функцию для расчёта соседней ячекий с учётом прикола генерации гексагонов
 export const MainMap = () => {
     const { main: map } = useMap();
 
