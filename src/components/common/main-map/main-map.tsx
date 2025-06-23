@@ -64,7 +64,7 @@ export const MainMap = () => {
             properties: {
                 ...feature.properties,
                 value: hexagonValues[`hex-${index}`] || 0,
-                gridPosition: [index % 10, Math.floor(index / 10)],
+                // gridPosition: [index % 10, Math.floor(index / 10)],
                 cellSize: cellSize,
                 isUserValue: false,
             },
@@ -120,7 +120,7 @@ export const MainMap = () => {
                     
                     const formattedValue = Number.isInteger(value)
                         ? value.toString()
-                        : value.toFixed(3);
+                        : value.toFixed(2);
 
                     return value > 0 ? formattedValue : '';
                 },
