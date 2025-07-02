@@ -1,0 +1,32 @@
+{
+    appId: 'ru.victor.geo-map',
+    artifactName: '${productName}.${ext}',
+    asar: true,
+
+    directories: {
+        output: 'release',
+    },
+
+    files: ['dist'],
+
+    // Linux Configuration
+    linux: {
+        target: ['AppImage'],
+    },
+
+    // Windows Configuration
+    win: {
+        target: [
+            {
+                target: 'nsis',
+                arch: ['x64'],
+            },
+        ],
+    },
+    nsis: {
+        oneClick: false,
+        perMachine: false,
+        allowToChangeInstallationDirectory: true,
+        deleteAppDataOnUninstall: false,
+    },
+}
