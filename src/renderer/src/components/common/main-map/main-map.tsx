@@ -35,6 +35,8 @@ export const MainMap = () => {
         },
     );
 
+    const showLabels = useHexagonStore.use.showLabels();
+
     useEffect(() => {
         if (!data || !map) return;
 
@@ -73,13 +75,13 @@ export const MainMap = () => {
         }));
 
         setGrid(grid.features as HexagonFeature[]);
-        
-        const values = grid.features.map(f => f.properties?.value || 0);
+
+        const values = grid.features.map((f) => f.properties?.value || 0);
         const newMaxValue = Math.max(...values);
         setMaxValue(newMaxValue);
-        
-        console.log(maxValue)
-        console.log(newMaxValue)
+
+        console.log(maxValue);
+        console.log(newMaxValue);
 
         setLayers([
             new GeoJsonLayer({
@@ -106,9 +108,12 @@ export const MainMap = () => {
                 filled: true,
                 getFillColor: (f) => {
                     const value = (f as Feature<Polygon>).properties?.value || 0;
-                    const normalizedValue = maxValue ? value / maxValue : 1;
-
-                    return [50, 150, 50, 100 + Math.min(value / normalizedValue, 155)];
+                    const normalizedValue = maxValue > 0 ? value / maxValue : 0;
+                    const r = 50;
+                    const g = 150;
+                    const b = 50;
+                    const alpha = 100 + normalizedValue * 100;
+                    return [r, g, b, alpha];
                 },
                 getLineColor: [0, 200, 0, 200],
                 lineWidthMinPixels: 1,
@@ -117,32 +122,35 @@ export const MainMap = () => {
                     if (hexId) selectHexagon(hexId);
                 },
             }),
+            ...(showLabels
+                ? [
+                      new TextLayer<HexagonFeature>({
+                          id: 'hexagon-values-text',
+                          data: grid.features as HexagonFeature[],
+                          pickable: false,
+                          getPosition: (d) => {
+                              const centroid = centerOfMass(d);
+                              return centroid.geometry.coordinates as [number, number];
+                          },
+                          getText: (d) => {
+                              const value = d.properties.value;
 
-            new TextLayer<HexagonFeature>({
-                id: 'hexagon-values-text',
-                data: grid.features as HexagonFeature[],
-                pickable: false,
-                getPosition: (d) => {
-                    const centroid = centerOfMass(d);
-                    return centroid.geometry.coordinates as [number, number];
-                },
-                getText: (d) => {
-                    const value = d.properties.value;
-                    
-                    const formattedValue = Number.isInteger(value)
-                        ? value.toString()
-                        : value.toFixed(2);
+                              const formattedValue = Number.isInteger(value)
+                                  ? value.toString()
+                                  : value.toFixed(2);
 
-                    return value > 0 ? formattedValue : '';
-                },
-                getSize: 16,
-                getAngle: 0,
-                getTextAnchor: 'middle',
-                getAlignmentBaseline: 'center',
-                getColor: [0, 0, 0, 200],
-            }),
+                              return value > 0 ? formattedValue : '';
+                          },
+                          getSize: 16,
+                          getAngle: 0,
+                          getTextAnchor: 'middle',
+                          getAlignmentBaseline: 'center',
+                          getColor: [0, 0, 0, 200],
+                      }),
+                  ]
+                : []),
         ]);
-    }, [cellSize, data, hexagonValues, selectHexagon, setGrid, maxValue]);
+    }, [cellSize, data, hexagonValues, selectHexagon, setGrid, maxValue, showLabels]);
 
     return (
         <div className={styles['main-map']}>

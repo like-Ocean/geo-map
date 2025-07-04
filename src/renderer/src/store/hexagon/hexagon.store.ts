@@ -10,6 +10,8 @@ interface HexagonState {
     sources: Record<string, number>;
     grid: HexagonFeature[];
     selectedHexagonId: string | null;
+
+    showLabels: boolean;
 }
 
 interface HexagonActions {
@@ -20,8 +22,10 @@ interface HexagonActions {
     removeSource: (hexId: string) => void;
     setGrid: (grid: HexagonFeature[]) => void;
     setUserValue: (hexId: string, value: boolean) => void;
+
     recalculateTension: () => void;
     resetAllValues: () => void;
+    toggleShowLabels: () => void;
 }
 
 export const useHexagonStoreBase = create<HexagonState & HexagonActions>()((set, get) => ({
@@ -31,6 +35,7 @@ export const useHexagonStoreBase = create<HexagonState & HexagonActions>()((set,
     sources: {},
     grid: [],
     selectedHexagonId: null,
+    showLabels: true,
 
     setCellSize: (cellSize) => {
         set({
@@ -107,6 +112,7 @@ export const useHexagonStoreBase = create<HexagonState & HexagonActions>()((set,
 
         set({ hexagonValues: newValues });
     },
+    
     resetAllValues: () => {
         set({
             hexagonValues: {},
@@ -116,6 +122,8 @@ export const useHexagonStoreBase = create<HexagonState & HexagonActions>()((set,
             selectedHexagonId: null,
         });
     },
+
+    toggleShowLabels: () => {set((state) => ({ showLabels: !state.showLabels }));},
 }));
 
 export const useHexagonStore = createSelectors(useHexagonStoreBase);

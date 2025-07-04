@@ -1,4 +1,4 @@
-import { InputNumber, Slider, Flex, Modal, Button } from 'antd';
+import { InputNumber, Slider, Flex, Modal } from 'antd';
 import { FC, useState, useEffect, useCallback } from 'react';
 import { useDebounce } from 'use-debounce';
 import { useHexagonStore } from '@renderer/store/hexagon';
@@ -7,7 +7,7 @@ export const CellSizeControl: FC = () => {
     const cellSize = useHexagonStore.use.cellSize();
     const hexagonValues = useHexagonStore.use.hexagonValues();
     const setCellSize = useHexagonStore.use.setCellSize();
-    const resetAllValues = useHexagonStore.use.resetAllValues();
+
 
     const [localSize, setLocalSize] = useState(cellSize);
     const [debouncedSize] = useDebounce(localSize, 500);
@@ -23,9 +23,7 @@ export const CellSizeControl: FC = () => {
         [setCellSize],
     );
 
-    const handleReset = useCallback(() => {
-        resetAllValues();
-    }, [resetAllValues]);
+
 
     useEffect(() => {
         if (hasData && debouncedSize !== cellSize) {
@@ -55,12 +53,6 @@ export const CellSizeControl: FC = () => {
                         onChange={(value) => value && setLocalSize(value)}
                         step={1}
                     />
-                </Flex>
-
-                <Flex justify="flex-start">
-                    <Button type="primary" danger onClick={handleReset}>
-                        Сброс значений
-                    </Button>
                 </Flex>
             </Flex>
 
