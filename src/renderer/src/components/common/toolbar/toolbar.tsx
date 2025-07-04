@@ -23,10 +23,15 @@ export const Toolbar = () => {
         <Card className={styles.toolbar} size="small">
             <SearchLocation />
             <CellSizeControl />
-            <Button type="primary" danger onClick={handleReset}>
-                Сброс значений
-            </Button>
-            <Switch checked={showLabels} onChange={handleToggle} />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Button style={{ marginTop: '5px' }} type="primary" danger onClick={handleReset}>
+                    Сброс значений
+                </Button>
+                <div style={{ marginTop: '5px' }}>
+                    <span style={{ marginRight: '5px' }}>Отображение текста:</span>
+                    <Switch checked={showLabels} onChange={handleToggle} />
+                </div>
+            </div>
         </Card>
     );
 };
