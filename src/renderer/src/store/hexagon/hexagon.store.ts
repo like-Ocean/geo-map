@@ -112,9 +112,9 @@ export const useHexagonStoreBase = create<HexagonState & HexagonActions>()((set,
             hexagonValues: {},
             userValues: {},
             sources: {},
+            grid: [],
             selectedHexagonId: null,
         });
-        get().recalculateTension();
     },
 }));
 
