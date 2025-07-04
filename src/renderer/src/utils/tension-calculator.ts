@@ -21,12 +21,12 @@ export const calculateTension = (
             if (distKm >= 187) // добавить если 148 + 25
                 distKm += 25
             const n = Math.ceil((distKm / P));
-            console.log("cellside*2: " + P)
-            console.log("distKm ", hex.id, distKm)
-            console.log(hex.id, "distKm / cellSize ", Math.trunc((distKm / cellSize)))
-            console.log(hex.id, "Через P ", Math.ceil((distKm / P)))
-            console.log(hex.id, "Через P без округления", (distKm / P))
-            console.log("---------------")
+            // console.log("cellside*2: " + P)
+            // console.log("distKm ", hex.id, distKm)
+            // console.log(hex.id, "distKm / cellSize ", Math.trunc((distKm / cellSize)))
+            // console.log(hex.id, "Через P ", Math.ceil((distKm / P)))
+            // console.log(hex.id, "Через P без округления", (distKm / P))
+            // console.log("---------------")
             if (n === 0) continue;
             total += value / Math.pow(n, 2);
         }

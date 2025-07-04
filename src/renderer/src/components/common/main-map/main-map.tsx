@@ -26,6 +26,8 @@ export const MainMap = () => {
 
     const [layers, setLayers] = useState<LayersList>([]);
 
+    const [maxValue, setMaxValue] = useState<number>(0);
+
     const { data } = useGetLocationQuery(
         location && {
             osm_type: location.osm_type,
@@ -71,6 +73,13 @@ export const MainMap = () => {
         }));
 
         setGrid(grid.features as HexagonFeature[]);
+        
+        const values = grid.features.map(f => f.properties?.value || 0);
+        const newMaxValue = Math.max(...values);
+        setMaxValue(newMaxValue);
+        
+        console.log(maxValue)
+        console.log(newMaxValue)
 
         setLayers([
             new GeoJsonLayer({
@@ -97,7 +106,9 @@ export const MainMap = () => {
                 filled: true,
                 getFillColor: (f) => {
                     const value = (f as Feature<Polygon>).properties?.value || 0;
-                    return [50, 150, 50, 100 + Math.min(value / 1000, 155)];
+                    const normalizedValue = maxValue ? value / maxValue : 1;
+
+                    return [50, 150, 50, 100 + Math.min(value / normalizedValue, 155)];
                 },
                 getLineColor: [0, 200, 0, 200],
                 lineWidthMinPixels: 1,
@@ -131,7 +142,7 @@ export const MainMap = () => {
                 getColor: [0, 0, 0, 200],
             }),
         ]);
-    }, [cellSize, data, hexagonValues, selectHexagon, setGrid]);
+    }, [cellSize, data, hexagonValues, selectHexagon, setGrid, maxValue]);
 
     return (
         <div className={styles['main-map']}>
@@ -150,7 +161,3 @@ export const MainMap = () => {
         </div>
     );
 };
-
-
-
-
