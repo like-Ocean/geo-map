@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Alert } from 'antd';
 import { bbox, hexGrid } from '@turf/turf';
 import centerOfMass from '@turf/center-of-mass';
 import { useGetLocationQuery } from '@renderer/api/nominatim/location/get-location';
@@ -79,9 +80,6 @@ export const MainMap = () => {
         const values = grid.features.map((f) => f.properties?.value || 0);
         const newMaxValue = Math.max(...values);
         setMaxValue(newMaxValue);
-
-        console.log(maxValue);
-        console.log(newMaxValue);
 
         setLayers([
             new GeoJsonLayer({
@@ -166,6 +164,12 @@ export const MainMap = () => {
             >
                 <DeckOverlay layers={layers} />
             </Map>
+            <Alert
+                className={styles.alertBottomLeft}
+                message="⚠️ Приложение в разработке. Возможны ошибки в вычислениях и нестабильная работа."
+                type="warning"
+                closable
+            />
         </div>
     );
 };

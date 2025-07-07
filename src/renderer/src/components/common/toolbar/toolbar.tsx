@@ -18,7 +18,6 @@ export const Toolbar = () => {
     const handleToggle = useCallback(() => {
         toggleShowLabels();
     }, [toggleShowLabels]);
-
     return (
         <Card className={styles.toolbar} size="small">
             <SearchLocation />
