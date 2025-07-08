@@ -6,7 +6,7 @@ import { useGetLocationQuery } from '@renderer/api/nominatim/location/get-locati
 import { mapTylerStyle } from '@renderer/constants/maptiler';
 import { DeckOverlay } from '../deck-overlay';
 import { LngLatBoundsLike, Map, useMap } from '@vis.gl/react-maplibre';
-import { GeoJsonLayer, LayersList, TextLayer } from 'deck.gl';
+import { GeoJsonLayer, LayersList, TextLayer, ScatterplotLayer } from 'deck.gl';
 import { useLocationStore } from '@renderer/store/location';
 import { useHexagonStore } from '@renderer/store/hexagon';
 import styles from './main-map.module.css';
@@ -22,6 +22,8 @@ export const MainMap = () => {
 
     const hexagonValues = useHexagonStore.use.hexagonValues();
     const selectHexagon = useHexagonStore.use.selectHexagon();
+
+    const userValues = useHexagonStore.use.userValues();
 
     const setGrid = useHexagonStore.use.setGrid();
 
@@ -81,6 +83,10 @@ export const MainMap = () => {
         const newMaxValue = Math.max(...values);
         setMaxValue(newMaxValue);
 
+        const userValuePoints = grid.features.filter((hex) => {
+            return userValues[hex.id as string] === true;
+        });
+
         setLayers([
             new GeoJsonLayer({
                 id: 'selected-location-area',
@@ -122,6 +128,17 @@ export const MainMap = () => {
             }),
             ...(showLabels
                 ? [
+                      new ScatterplotLayer({
+                          id: 'user-values-indicator',
+                          data: userValuePoints,
+                          getPosition: (hex) =>
+                              centerOfMass(hex).geometry.coordinates as [number, number],
+                          getFillColor: [255, 0, 0],
+                          getRadius: 10,
+                          radiusMinPixels: 5,
+                          radiusMaxPixels: 15,
+                          pickable: false,
+                      }),
                       new TextLayer<HexagonFeature>({
                           id: 'hexagon-values-text',
                           data: grid.features as HexagonFeature[],
@@ -148,7 +165,7 @@ export const MainMap = () => {
                   ]
                 : []),
         ]);
-    }, [cellSize, data, hexagonValues, selectHexagon, setGrid, maxValue, showLabels]);
+    }, [cellSize, data, hexagonValues, selectHexagon, setGrid, userValues, maxValue, showLabels]);
 
     return (
         <div className={styles['main-map']}>
