@@ -22,6 +22,16 @@ export const calculateTension = (
                     distKm += 25;
             }
 
+            if (cellSize == 30) {
+                if (distKm >= 200 || distKm >= 175) 
+                    distKm += P;
+            }
+
+            if (cellSize == 25) {
+                if (distKm >= 188) 
+                    distKm += P;
+            }
+
             if (cellSize == 20) {
                 if (distKm >= 150) 
                     distKm += P;
@@ -29,6 +39,11 @@ export const calculateTension = (
             
             if (cellSize == 10) {
                 if (distKm >= 75) 
+                    distKm += P;
+            }
+
+            if (cellSize == 5) {
+                if (distKm >= 35) 
                     distKm += P;
             }
 

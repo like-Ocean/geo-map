@@ -39,19 +39,19 @@ export const CellSizeControl: FC = () => {
                 <Flex gap={8} align="center">
                     <span>Размер ячейки (км):</span>
                     <Slider
-                        min={1}
-                        max={200}
+                        min={5}
+                        max={45}
                         value={localSize}
                         onChange={setLocalSize}
                         style={{ width: 150 }}
-                        step={1}
+                        step={5}
                     />
                     <InputNumber
                         min={1}
-                        max={200}
+                        max={45}
                         value={localSize}
                         onChange={(value) => value && setLocalSize(value)}
-                        step={1}
+                        step={5}
                     />
                 </Flex>
             </Flex>
