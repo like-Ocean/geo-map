@@ -72,16 +72,6 @@
     
 -   Интернет для запросов к Nominatim и тайлов карт
     
-
-### Запуск через Docker
-
--   **Docker Engine** (скачать: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/))
-    
--   (опционально) **Docker Compose**
-    
-
-> Если у вас нет Node.js, используйте Docker. Если нет Docker — установите Node.js.
-
 ----------
 
 ## Запуск без Docker
@@ -137,43 +127,6 @@ yarn preview
     
 -   Сервер предпросмотра откроется на [http://localhost:4173](http://localhost:4173/)
     
-
-----------
-
-## Запуск через Docker
-
-### Установка Docker
-
--   Установите Docker Desktop (Windows/macOS) или Docker Engine (Linux):  
-    [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
-    
-
-### Сборка и запуск контейнера
-
-1.  В корне проекта (где находится `Dockerfile`):
-    
-    ```bash
-    docker-compose build
-    
-    ```
-    
-2.  Запустите контейнер:
-    
-    ```bash
-    docker-compose up -d
-    
-    ```
-    
-3.  Перейдите в браузере: [http://localhost:4173](http://localhost:4173/)
-    
-
-> Для остановки выполните:
-> 
-> ```bash
-> 
-> docker-compose down
-> 
-> ```
 
 ----------
 
